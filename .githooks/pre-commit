@@ -1,0 +1,20 @@
+#!/bin/sh
+# Auto-sync canonical onboarding docs before committing.
+
+PWSH_BIN="pwsh"
+if ! command -v "$PWSH_BIN" >/dev/null 2>&1; then
+  echo "pre-commit: PowerShell 7+ (pwsh) is required." >&2
+  exit 1
+fi
+
+"$PWSH_BIN" -NoLogo -NoProfile -File "scripts/sync_canonical_docs.ps1" || {
+  echo "pre-commit: Failed to sync canonical docs." >&2
+  exit 1
+}
+
+git diff --name-only --exit-code README.md CANONICAL_SUMMARY.md >/dev/null 2>&1 || {
+  echo "pre-commit: Canonical docs were updated. Please add README.md and CANONICAL_SUMMARY.md." >&2
+  exit 1
+}
+
+exit 0

@@ -4,42 +4,43 @@
 
 | Environment | Path |
 |-------------|------|
-| Windows host | `C:\Users\billt\OneDrive\Projects\duoluga\` |
-| Backups | `C:\Users\billt\OneDrive\Projects\backups\2025-10-23_V1.4.0_HYBRID_ROUTING_A\` |
-| Linux / Docker | `/projects/duoluga/` (mounted as `/mnt/AgentO/projects/duoluga/`) |
-| Code & scripts | `/projects/duoluga/scripts/` |
-| Memory assets | `/projects/duoluga/memory/` |
-| Docs | `/projects/duoluga/documentation/` |
-
-> When inside containers, replace the Windows prefix with `/projects/duoluga/`.
+| Project root (Windows) | C:\Users\billt\OneDrive\Projects\duoluga |
+| Project root (Linux/Docker) | /projects/duoluga |
+| Canonical snapshot (Windows) | C:\Users\billt\OneDrive\Projects\backups\2025-10-23_V1.4.0_HYBRID_ROUTING_A |
+| Canonical snapshot (Linux/Docker) | /mnt/AgentO/projects/backups/2025-10-23_V1.4.0_HYBRID_ROUTING_A |
+| Backups root | C:\Users\billt\OneDrive\Projects\backups |
+| Code & scripts | /projects/duoluga/scripts |
+| Memory assets | /projects/duoluga/memory |
+| Docs | /projects/duoluga/documentation |
 
 ## Canonical Documentation & Key Files
 
-| Purpose | Path (relative to snapshot root) |
-|---------|----------------------------------|
-| Project scope / README | `documentation/DUOLUGA_PROJECT_SCOPE.md` |
-| Architecture (RAG bridge) | `documentation/DUOLUGA_RAG_LOOKUP_BRIDGE.md` |
-| Release notes | `documentation/DUOLUGA_V1_RELEASE_NOTES.md` |
-| Latest session log | `documentation/SESSION_2025-10-19_DUOLUGA_RAG_COMPLETE.md` |
-| Backup manifest | `documentation/BACKUP_MANIFEST.md` |
-| Backend API | `scripts/duoluga_api.py` |
-| Lookup middleware | `scripts/lookup_bridge.py` |
-| Translation memories | `memory/translations_clean.jsonl`, `memory/duoluga_word_memory_clean.jsonl` |
+| Purpose | Path |
+|---------|------|
+| Project scope / README | documentation/DUOLUGA_PROJECT_SCOPE.md |
+| Architecture (RAG bridge) | documentation/DUOLUGA_RAG_LOOKUP_BRIDGE.md |
+| Release notes | documentation/DUOLUGA_V1_RELEASE_NOTES.md |
+| Latest session log | documentation/SESSION_2025-10-19_DUOLUGA_RAG_COMPLETE.md |
+| Backup manifest | documentation/BACKUP_MANIFEST.md |
+| Backend API | scripts/duoluga_api.py |
+| Lookup middleware | scripts/lookup_bridge.py |
+| Translation memories | memory/translations_clean.jsonl, memory/duoluga_word_memory_clean.jsonl |
+| n8n fallback workflow docs | infrastructure/n8n/README.md |
 
 ## Current Project Status
 
-- **Version:** Duoluga RAG v1.0 (production ready as of Oct 19–20, 2025)
-- **Stack:** Lookup index + bridge middleware + LLM fallback + Redis/JSON caching
-- **Documentation:** All changes, session logs, and guides stored in the snapshot directories above
-- **Backups:** `C:\Users\billt\OneDrive\Projects\backups\2025-10-23_V1.4.0_HYBRID_ROUTING_A\` (latest) and `…\2025-10-20_RAG_V1_COMPLETE\` (validated)
-- **Next enhancements:** semantic search, multi-language expansion, continued enrichment using OpenRouter within the RAG pipeline (see roadmap in docs)
+- **Version:** 1.4.0 "Hybrid-Routing-A"
+- **Status:** production-ready
+- **Capabilities:** Lookup index, bridge middleware, LLM fallback, Redis/JSON caching
+- **Docs & logs:** All session reports, release notes, and architecture guides live in the snapshot directories above.
+- **Backups:** Latest verified backup at C:\Users\billt\OneDrive\Projects\backups\2025-10-20_RAG_V1_COMPLETE; see documentation/BACKUP_MANIFEST.md for details.
+- **Next enhancements:** Semantic search, multi-language expansion, ongoing enrichment using OpenRouter within the RAG pipeline (see roadmap in the docs).
 
 ## Staying Up to Date
 
-1. Start with `DUOLUGA_PROJECT_SCOPE.md` for onboarding and operational status.
+1. Start with DUOLUGA_PROJECT_SCOPE.md for onboarding and operational status.
 2. Review the latest session log to understand the most recent changes.
-3. Explore the `scripts/` directory for automation and backend entry points.
-4. Use `BACKUP_MANIFEST.md` and the dated backup directories for recovery or audits.
+3. Explore the scripts/ directory for automation and backend entry points.
+4. Use BACKUP_MANIFEST.md and the dated backup directories for recovery or audits.
 
-**Reminder:** Keep this summary aligned with the current canonical snapshot whenever new releases go live.
-
+**Reminder:** Run scripts/sync_canonical_docs.ps1 after updating canonical_index.json so this summary and the repository README stay in sync.

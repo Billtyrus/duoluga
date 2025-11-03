@@ -1,5 +1,9 @@
 {
   "project": "Duoluga",
+  "project_root": {
+    "windows": "C:\\Users\\billt\\OneDrive\\Projects\\duoluga",
+    "linux": "/projects/duoluga"
+  },
   "canonical_snapshot": {
     "version": "1.4.0",
     "codename": "Hybrid-Routing-A",
