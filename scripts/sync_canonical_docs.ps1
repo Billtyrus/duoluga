@@ -76,6 +76,11 @@ The snapshot's own `README.md` covers architecture, automation scripts, and dail
 On the Windows host, manage the running stack from `C:\Users\billt\OneDrive\Projects\agent-zero\` using scripts such as `start-duoluga.ps1`, `status-duoluga.ps1`, and `diagnostics.ps1`. The same directory stores PowerShell helpers referenced by `canonical_index.json`.
 
 Update these files whenever a newer snapshot becomes the canonical state to keep onboarding seamless for future teammates and LLMs.
+
+## Automation
+
+- A git pre-commit hook (`.githooks/pre-commit`) runs `scripts/sync_canonical_docs.ps1` automatically to keep these docs in sync.  
+  After cloning, enable it with `git config core.hooksPath .githooks`.
 "@
 
     return $readme
