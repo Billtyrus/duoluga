@@ -1,0 +1,46 @@
+{
+  "project": "Duoluga",
+  "canonical_snapshot": {
+    "version": "1.4.0",
+    "codename": "Hybrid-Routing-A",
+    "status": "production-ready",
+    "as_of": "2025-11-04",
+    "windows_path": "C:\\Users\\billt\\OneDrive\\Projects\\backups\\2025-10-23_V1.4.0_HYBRID_ROUTING_A",
+    "linux_path": "/mnt/AgentO/projects/backups/2025-10-23_V1.4.0_HYBRID_ROUTING_A"
+  },
+  "canonical_docs": {
+    "summary": "CANONICAL_SUMMARY.md",
+    "project_scope": "documentation/DUOLUGA_PROJECT_SCOPE.md",
+    "architecture": "documentation/DUOLUGA_RAG_LOOKUP_BRIDGE.md",
+    "release_notes": "documentation/DUOLUGA_V1_RELEASE_NOTES.md",
+    "session_log": "documentation/SESSION_2025-10-19_DUOLUGA_RAG_COMPLETE.md",
+    "backup_manifest": "documentation/BACKUP_MANIFEST.md",
+    "readme": "README.md"
+  },
+  "code_roots": {
+    "scripts": "scripts/",
+    "backend_entrypoint": "scripts/duoluga_api.py",
+    "lookup_middleware": "scripts/lookup_bridge.py",
+    "management_scripts": "C:\\Users\\billt\\OneDrive\\Projects\\agent-zero\\*.ps1",
+    "infrastructure_docs": "infrastructure/n8n/README.md"
+  },
+  "memory_assets": {
+    "sentence_memory": "memory/translations_clean.jsonl",
+    "word_memory": "memory/duoluga_word_memory_clean.jsonl",
+    "dense_embeddings": "assets/lookup_index.json"
+  },
+  "backup_reference": {
+    "latest_verified_backup": "C:\\Users\\billt\\OneDrive\\Projects\\backups\\2025-10-20_RAG_V1_COMPLETE",
+    "manifest": "documentation/BACKUP_MANIFEST.md"
+  },
+  "docker_paths": {
+    "projects_root": "/projects/duoluga",
+    "scripts": "/projects/duoluga/scripts",
+    "memory": "/projects/duoluga/memory",
+    "docs": "/projects/duoluga/documentation"
+  },
+  "notes": [
+    "Update this file alongside README.md when promoting a new snapshot to canonical status.",
+    "Paths are relative to the snapshot root unless marked absolute."
+  ]
+}

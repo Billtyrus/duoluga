@@ -1,0 +1,226 @@
+meta:
+  instanceId: duoluga-fallback
+  name: Duoluga Nightly Fallback
+  version: '1.0'
+nodes:
+  - id: a86a9a03-51da-4c9d-887e-32f25111bde2
+    name: Nightly Trigger
+    type: n8n-nodes-base.cron
+    typeVersion: 1
+    position:
+      x: -900
+      y: -60
+    parameters:
+      triggerTimes:
+        - mode: everyDay
+          hour: '23'
+          minute: '55'
+          timezone: America/New_York
+      workflowTimezone: America/New_York
+  - id: 0a41333d-1cbf-4ea7-8b2b-7c3a40df7ec3
+    name: Health And Recovery
+    type: n8n-nodes-base.executeCommand
+    typeVersion: 1
+    position:
+      x: -540
+      y: -60
+    parameters:
+      command: |-
+        bash -lc "set -euo pipefail
+        timestamp=$(date -Iseconds)
+        log_dir='/a0/logs'
+        mkdir -p "$log_dir"
+        log="$log_dir/night_ops.log"
+
+        declare -a summary_lines=()
+        overall_status='ok'
+
+        services=(
+          'duoluga-api|http://duoluga-api:8182/health|duoluga-api'
+          'duoluga-agent|http://duoluga-agent:8787/health|duoluga-agent'
+          'duoluga-ollama|http://duoluga-ollama:11434/api/tags|duoluga-ollama'
+          'duoluga-cloudflared|http://duoluga-cloudflared:2000/ready|duoluga-cloudflared'
+        )
+
+        for svc in "${services[@]}"; do
+          IFS='|' read -r label url container <<<"$svc"
+          if curl -fsS --max-time 10 "$url" >/dev/null 2>&1; then
+            summary_lines+=("$label [OK] healthy")
+          else
+            summary_lines+=("$label [FAIL] unhealthy - attempting restart")
+            overall_status='warn'
+            if docker restart "$container" >>"$log" 2>&1; then
+              summary_lines+=("$label [ACTION] restart succeeded")
+            else
+              summary_lines+=("$label [ACTION] restart failed")
+              overall_status='fail'
+            fi
+          fi
+        done
+
+        backup_dir="/a0/backups/$(date +%Y%m%d)"
+        mkdir -p "$backup_dir"
+        backup_items=()
+
+        if [ -d '/a0/datasets' ] && compgen -G '/a0/datasets/*.jsonl' > /dev/null; then
+          cp /a0/datasets/*.jsonl "$backup_dir"/ 2>>"$log" && backup_items+=("datasets")
+        fi
+
+        if [ -d '/a0/chroma' ]; then
+          tar -czf "$backup_dir/chroma_$(date +%H%M%S).tar.gz" -C /a0/chroma . 2>>"$log" && backup_items+=("chroma")
+        fi
+
+        if [ -f '/a0/.env' ]; then
+          cp /a0/.env "$backup_dir/.env.$(date +%H%M%S)" 2>>"$log" && backup_items+=(".env")
+        fi
+
+        backup_summary='none'
+        if [ ${#backup_items[@]} -gt 0 ]; then
+          backup_summary=$(printf '%s' "${backup_items[*]}")
+        fi
+
+        summary_text=$(printf '%s\n' "${summary_lines[@]:-No services checked}")
+        printf '[%s] status=%s backups=%s\n%s\n' "$timestamp" "$overall_status" "$backup_summary" "$summary_text" >>"$log"
+
+        export TIMESTAMP="$timestamp"
+        export OVERALL_STATUS="$overall_status"
+        export SUMMARY_TEXT="$summary_text"
+        export BACKUP_SUMMARY="$backup_summary"
+
+        node - <<'NODE'
+        const { TIMESTAMP, OVERALL_STATUS, SUMMARY_TEXT, BACKUP_SUMMARY } = process.env;
+        console.log(JSON.stringify({
+          timestamp: TIMESTAMP,
+          status: OVERALL_STATUS,
+          summary: SUMMARY_TEXT,
+          backups: BACKUP_SUMMARY,
+        }));
+        NODE"
+      options:
+        continueOnFail: true
+  - id: 69f7d84e-a9ab-4be8-afe6-fb62f1a4dc2b
+    name: Parse Result
+    type: n8n-nodes-base.function
+    typeVersion: 1
+    position:
+      x: -260
+      y: -60
+    parameters:
+      functionCode: |-
+        const stdout = $json.stdout || '';
+        try {
+          const parsed = JSON.parse(stdout);
+          return [parsed];
+        } catch (error) {
+          return [{
+            timestamp: new Date().toISOString(),
+            status: 'fail',
+            summary: stdout ? `Command output not JSON: ${stdout}` : 'Health command produced no output',
+            backups: 'n/a',
+            error: $json.stderr || error.message,
+          }];
+        }
+  - id: 4868cb9a-02a0-4bf2-9cdf-cdf6e6fa0d83
+    name: Status Gate
+    type: n8n-nodes-base.if
+    typeVersion: 1
+    position:
+      x: 40
+      y: -180
+    parameters:
+      conditions:
+        string:
+          - value1: '={{$json["status"]}}'
+            operation: notEqual
+            value2: ok
+  - id: 16ae51de-8985-4c9c-855d-7b06f93b36c5
+    name: Final Summary
+    type: n8n-nodes-base.set
+    typeVersion: 2
+    position:
+      x: 40
+      y: 40
+    parameters:
+      keepOnlySet: false
+      values:
+        string:
+          - name: status
+            value: '={{$json["status"]}}'
+          - name: backups
+            value: '={{$json["backups"]}}'
+          - name: summary
+            value: '={{$json["summary"]}}'
+          - name: timestamp
+            value: '={{$json["timestamp"]}}'
+          - name: headline
+            value: '={{$json["timestamp"] + " :: " + $json["status"].toUpperCase()}}'
+  - id: 4b057b22-2df3-4e63-81e7-cc4f3a5132d9
+    name: Telegram Alert
+    type: n8n-nodes-base.telegram
+    typeVersion: 1
+    position:
+      x: 320
+      y: -300
+    disabled: true
+    parameters:
+      chatId: '={{$env["TELEGRAM_CHAT_ID"]}}'
+      text: '={{"ALERT: Duoluga nightly check " + $json.status.toUpperCase() + "\nBackups: " + $json.backups + "\n" + $json.summary}}'
+    notesInFlow: true
+    notes: >-
+      Enable this node after creating a Telegram credential and setting
+      TELEGRAM_CHAT_ID.
+  - id: 868a483e-8a56-48e4-83d0-5801aaa2c7a0
+    name: Discord Alert
+    type: n8n-nodes-base.httpRequest
+    typeVersion: 1
+    position:
+      x: 320
+      y: -60
+    disabled: true
+    parameters:
+      method: POST
+      url: '={{$env["DISCORD_WEBHOOK_URL"]}}'
+      jsonParameters: true
+      options:
+        redirect:
+          followRedirects: manual
+      bodyParametersUi:
+        parameter:
+          - name: content
+            value: '={{"ALERT: Duoluga nightly check " + $json.status.toUpperCase() + "\nBackups: " + $json.backups + "\n" + $json.summary}}'
+    notesInFlow: true
+    notes: >-
+      Enable after setting DISCORD_WEBHOOK_URL; keeps alerts in sync with
+      Telegram.
+connections:
+  Nightly Trigger:
+    main:
+      - - node: Health And Recovery
+          type: main
+          index: 0
+  Health And Recovery:
+    main:
+      - - node: Parse Result
+          type: main
+          index: 0
+  Parse Result:
+    main:
+      - - node: Status Gate
+          type: main
+          index: 0
+      - - node: Final Summary
+          type: main
+          index: 0
+  Status Gate:
+    main:
+      - - node: Telegram Alert
+          type: main
+          index: 0
+        - node: Discord Alert
+          type: main
+          index: 0
+settings:
+  timezone: America/New_York
+active: false
+tags:
+  - Nightly Ops
