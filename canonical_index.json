@@ -5,12 +5,12 @@
     "linux": "/projects/duoluga"
   },
   "canonical_snapshot": {
-    "version": "1.4.0",
-    "codename": "Hybrid-Routing-A",
+    "version": "1.4.1",
+    "codename": "Fuzzy-Luo-Fix",
     "status": "production-ready",
     "as_of": "2025-11-04",
-    "windows_path": "C:\\Users\\billt\\OneDrive\\Projects\\backups\\2025-10-23_V1.4.0_HYBRID_ROUTING_A",
-    "linux_path": "/mnt/AgentO/projects/backups/2025-10-23_V1.4.0_HYBRID_ROUTING_A"
+    "windows_path": "C:\\Users\\billt\\OneDrive\\Projects\\backups\\2025-11-04_V1.4.1_FUZZY_LUO_FIX",
+    "linux_path": "/mnt/AgentO/projects/backups/2025-11-04_V1.4.1_FUZZY_LUO_FIX"
   },
   "canonical_docs": {
     "summary": "CANONICAL_SUMMARY.md",

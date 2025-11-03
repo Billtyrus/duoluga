@@ -6,8 +6,8 @@
 |-------------|------|
 | Project root (Windows) | C:\Users\billt\OneDrive\Projects\duoluga |
 | Project root (Linux/Docker) | /projects/duoluga |
-| Canonical snapshot (Windows) | C:\Users\billt\OneDrive\Projects\backups\2025-10-23_V1.4.0_HYBRID_ROUTING_A |
-| Canonical snapshot (Linux/Docker) | /mnt/AgentO/projects/backups/2025-10-23_V1.4.0_HYBRID_ROUTING_A |
+| Canonical snapshot (Windows) | C:\Users\billt\OneDrive\Projects\backups\2025-11-04_V1.4.1_FUZZY_LUO_FIX |
+| Canonical snapshot (Linux/Docker) | /mnt/AgentO/projects/backups/2025-11-04_V1.4.1_FUZZY_LUO_FIX |
 | Backups root | C:\Users\billt\OneDrive\Projects\backups |
 | Code & scripts | /projects/duoluga/scripts |
 | Memory assets | /projects/duoluga/memory |
@@ -29,7 +29,7 @@
 
 ## Current Project Status
 
-- **Version:** 1.4.0 "Hybrid-Routing-A"
+- **Version:** 1.4.1 "Fuzzy-Luo-Fix"
 - **Status:** production-ready
 - **Capabilities:** Lookup index, bridge middleware, LLM fallback, Redis/JSON caching
 - **Docs & logs:** All session reports, release notes, and architecture guides live in the snapshot directories above.

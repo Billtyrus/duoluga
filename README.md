@@ -5,11 +5,11 @@ Source code, documentation, and backups live in dated snapshots outside the repo
 
 ## Current Canonical Snapshot (2025-11-04)
 
-- **Version:** 1.4.0 "Hybrid-Routing-A"
+- **Version:** 1.4.1 "Fuzzy-Luo-Fix"
 - **Project root (Windows):** `C:\Users\billt\OneDrive\Projects\duoluga`
 - **Project root (Linux/Docker):** `/projects/duoluga`
-- **Snapshot root (Windows):** `C:\Users\billt\OneDrive\Projects\backups\2025-10-23_V1.4.0_HYBRID_ROUTING_A`
-- **Snapshot root (Linux/Docker):** `/mnt/AgentO/projects/backups/2025-10-23_V1.4.0_HYBRID_ROUTING_A`
+- **Snapshot root (Windows):** `C:\Users\billt\OneDrive\Projects\backups\2025-11-04_V1.4.1_FUZZY_LUO_FIX`
+- **Snapshot root (Linux/Docker):** `/mnt/AgentO/projects/backups/2025-11-04_V1.4.1_FUZZY_LUO_FIX`
 - **Key docs** (paths relative to the snapshot root; swap the prefix for container paths when inside Docker):
   - Project scope & onboarding: `documentation/DUOLUGA_PROJECT_SCOPE.md`
   - Architecture (RAG bridge): `documentation/DUOLUGA_RAG_LOOKUP_BRIDGE.md`
